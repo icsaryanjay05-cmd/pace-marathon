@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#0b1118" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="description" content="PACE V5: marathon training and race-day command center, COROS imports, recovery, fueling, and Google Sheets cloud analytics." />
+  <title>PACE V5 / Marathon Training Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script>document.documentElement.classList.add('js','is-booting');setTimeout(()=>{if(document.documentElement.classList.contains('is-booting')){document.documentElement.classList.remove('is-booting');document.documentElement.classList.add('is-ready');const el=document.getElementById('paceSplash');if(el)el.style.display='none';}},4500);</script>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="motion.css" />
+  <link rel="stylesheet" href="v4.css" />
+  <link rel="stylesheet" href="race.css" />
+  <link rel="stylesheet" href="v5.css" />
+  <script src="plan.js" defer></script>
+  <script src="importers.js" defer></script>
+  <script src="v5.js" defer></script>
+  <script src="app.js" defer></script>
+  <script src="motion.js" defer></script>
+  <script src="cloud.js" defer></script>
+  <script src="pwa.js" defer></script>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body>
+  <!-- Motion-only intro. Without JavaScript, the intro remains hidden. -->
+  <div id="paceSplash" class="pace-splash" role="status" aria-label="Opening your PACE training dashboard">
+    <div class="splash-top">
+      <div class="splash-brand"><span class="splash-brand-mark" aria-hidden="true"><i></i><i></i></span><span>PACE<b>.</b></span></div>
+      <span class="splash-version">MARATHON TRAINING SYSTEM · V5</span>
+    </div>
+    <div class="splash-center">
+      <div class="splash-copy">
+        <p class="splash-eyebrow">TRAIN. FUEL. RECOVER. REPEAT.</p>
+        <h1 class="splash-headline">BUILT FOR<br/><span>THE LONG RUN.</span></h1>
+        <p class="splash-subtitle">One training plan. Every kilometer. Your journey to race day starts here.</p>
+      </div>
+      <div class="splash-route-wrap" aria-hidden="true">
+        <svg class="splash-route" viewBox="0 0 400 400" focusable="false">
+          <circle class="route-side" cx="200" cy="200" r="184" />
+          <circle class="route-back" cx="200" cy="200" r="150" />
+          <circle class="route-arc" cx="200" cy="200" r="150" transform="rotate(-90 200 200)" />
+        </svg>
+        <div class="splash-orb"></div>
+        <div class="splash-distance"><strong>42.2</strong><span>KILOMETERS</span></div>
+      </div>
+    </div>
+    <div class="splash-bottom">
+      <div class="splash-loading-label"><span class="splash-pulse"></span> PREPARING YOUR TRAINING SPACE</div>
+      <span class="splash-percent" id="splashPercent">05%</span>
+      <div class="splash-meter" aria-hidden="true"><span class="splash-meter-fill" id="splashMeterFill"></span></div>
+      <div class="splash-caption">YOUR ROAD TO NOVEMBER 28, 2026</div>
+      <button type="button" class="splash-skip" id="skipIntro" aria-label="Skip opening animation">Skip intro <span aria-hidden="true">→</span></button>
+    </div>
+  </div>
+  <div class="ambient ambient-one"></div><div class="ambient ambient-two"></div>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand" aria-label="PACE Marathon Hub"><div class="brand-symbol"><span class="symbol-slash"></span><span class="symbol-slash symbol-slash-2"></span></div><div><strong>PACE<span class="brand-dot">.</span></strong><small>MARATHON OS</small></div></div>
+      <div class="sidebar-caption">WORKSPACE</div>
+      <nav aria-label="Main navigation" id="mainNav">
+        <button class="nav-link active" data-page="dashboard"><span class="nav-icon" data-icon="dashboard"></span><span>Overview</span></button>
+        <button class="nav-link" data-page="training"><span class="nav-icon" data-icon="calendar"></span><span>Training plan</span></button>
+        <button class="nav-link" data-page="runs"><span class="nav-icon" data-icon="activity"></span><span>Run journal</span></button>
+        <button class="nav-link" data-page="nutrition"><span class="nav-icon" data-icon="nutrition"></span><span>Nutrition & fuel</span></button>
+        <button class="nav-link" data-page="schedule"><span class="nav-icon" data-icon="clock"></span><span>Daily schedule</span></button>
+        <button class="nav-link" data-page="recovery"><span class="nav-icon" data-icon="heart"></span><span>Recovery</span></button>
+        <button class="nav-link" data-page="race"><span class="nav-icon" data-icon="target"></span><span>Race dashboard</span></button>
+        <button class="nav-link" data-page="insights"><span class="nav-icon" data-icon="chart"></span><span>Insights</span></button>
+        <button class="nav-link" data-page="coach"><span class="nav-icon" data-icon="bolt"></span><span>Training coach</span></button>
+        <button class="nav-link" data-page="gps"><span class="nav-icon" data-icon="distance"></span><span>GPS & splits</span></button>
+        <button class="nav-link" data-page="reports"><span class="nav-icon" data-icon="chart"></span><span>Weekly reports</span></button>
+        <button class="nav-link" data-page="heat"><span class="nav-icon" data-icon="flame"></span><span>Heat assistant</span></button>
+      </nav>
+      <div class="sidebar-caption sidebar-tools-caption">PREFERENCES</div>
+      <nav>
+        <button class="nav-link" id="settingsBtn"><span class="nav-icon" data-icon="settings"></span><span>Settings & goals</span></button>
+        <button class="nav-link" id="cloudBtn"><span class="nav-icon" data-icon="upload"></span><span>Cloud sync</span><span class="cloud-nav-dot" id="cloudNavDot" aria-hidden="true"></span></button>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="next-race-box"><span class="tiny-spark">✳</span><div class="small-muted">THE BIG DAY</div><strong>42.2 KM</strong><div class="race-bottom"><span>Nov 28, 2026</span><span id="sidebarCountdown">—</span></div><div class="race-track"><i id="raceProgress"></i></div></div>
+        <div class="sidebar-user"><div class="user-avatar">R</div><div><strong>My training space</strong><span>One run at a time</span></div><span class="sidebar-user-dots">•••</span></div>
+      </div>
+    </aside>
+    <div class="main-shell">
+      <header class="topbar">
+        <div class="top-left"><button class="icon-button mobile-menu" id="mobileMenu" aria-label="Open navigation"><span data-icon="menu"></span></button><span class="breadcrumb">WORKSPACE</span><span class="breadcrumb-chevron">/</span><strong id="topPageName">Overview</strong></div>
+        <div class="top-actions"><button type="button" id="cloudTopBtn" class="cloud-top-pill" aria-label="Open cloud synchronization settings"><i id="cloudTopDot"></i><span id="cloudTopLabel">Local only</span></button><span class="current-date" id="currentDate"></span><span class="separator"></span><button class="button button-primary top-add" data-action="add-run"><span data-icon="plus"></span> Log a run</button></div>
+      </header>
+      <main id="view" class="view" aria-live="polite"></main>
+      <footer class="site-footer"><span>PACE / THE PROCESS IS THE POINT.</span><span id="cloudFooter">Local-first data • Sign in with Google to sync your devices</span></footer>
+    </div>
+  </div>
+  <div class="mobile-overlay" id="mobileOverlay"></div>
+  <dialog class="app-dialog" id="runDialog">
+    <form id="runForm" class="modal-form"><div class="modal-heading"><div><small>RUN JOURNAL</small><h2 id="runDialogTitle">Log a run</h2></div><button type="button" class="icon-button close-dialog" aria-label="Close">×</button></div>
+      <input type="hidden" name="id" />
+      <div class="field-grid"><label class="field">Date<input name="date" type="date" required /></label><label class="field">Run type<select name="type"><option>Easy</option><option>Recovery</option><option>Long run</option><option>Threshold</option><option>Interval</option><option>Tempo</option><option>Race</option><option>Other</option></select></label></div>
+      <div class="field-grid"><label class="field">Distance (km)<input name="distance" type="number" min="0.01" step="0.01" placeholder="12.00" required /></label><label class="field">Moving time (mm:ss or h:mm:ss)<input name="duration" type="text" placeholder="1:04:30" required /></label></div>
+      <div class="field-grid"><label class="field">Average heart rate (bpm)<input name="hr" type="number" min="40" max="240" placeholder="Optional" /></label><label class="field">Effort / RPE (1–10)<input name="rpe" type="number" min="1" max="10" placeholder="Optional" /></label></div>
+      <div class="field-grid"><label class="field">Sleep last night (hours)<input name="sleep" type="number" min="0" max="24" step="0.5" placeholder="Optional" /></label><label class="field">Calories from run fuel (g carbs)<input name="fuelCarbs" type="number" min="0" step="1" placeholder="Optional" /></label></div>
+      <div class="field-grid"><label class="field">Fluids during run (mL)<input name="fluids" type="number" min="0" step="50" placeholder="Optional" /></label><label class="field">Shoe / route<input name="shoe" maxlength="100" placeholder="Optional" /></label></div>
+      <div class="field-grid"><label class="field">Average cadence (steps/min)<input name="cadence" type="number" min="0" max="250" placeholder="Optional" /></label><label class="field">Elevation gain (m)<input name="elevation" type="number" min="0" max="20000" placeholder="Optional" /></label></div>
+      <label class="field">Humidity (%)<input name="humidity" type="number" min="0" max="100" placeholder="Optional weather observation" /></label>
+      <label class="field">Session notes<textarea name="notes" rows="3" placeholder="How did it feel? Weather, splits, fueling, recovery..."></textarea></label>
+      <div class="modal-actions"><button type="button" class="button button-ghost close-dialog">Cancel</button><button type="submit" class="button button-primary">Save run <span data-icon="arrow"></span></button></div>
+    </form>
+  </dialog>
+  <dialog class="app-dialog" id="mealDialog">
+    <form id="mealForm" class="modal-form"><div class="modal-heading"><div><small>DAILY FUEL</small><h2 id="mealDialogTitle">Add a meal</h2></div><button type="button" class="icon-button close-dialog" aria-label="Close">×</button></div><input type="hidden" name="id" />
+      <div class="field-grid"><label class="field">Date<input name="date" type="date" required /></label><label class="field">Meal<select name="category"><option>Breakfast</option><option>Lunch</option><option>Dinner</option><option>Snack</option><option>Run fueling</option></select></label></div>
+      <label class="field">Food / drink<input name="name" maxlength="100" placeholder="e.g. Rice, chicken and vegetables" required /></label>
+      <div class="field-grid"><label class="field">Calories (kcal)<input name="calories" type="number" min="0" step="1" value="0" required /></label><label class="field">Carbohydrates (g)<input name="carbs" type="number" min="0" step="0.1" value="0" required /></label></div>
+      <div class="field-grid"><label class="field">Protein (g)<input name="protein" type="number" min="0" step="0.1" value="0" required /></label><label class="field">Fat (g)<input name="fat" type="number" min="0" step="0.1" value="0" required /></label></div>
+      <label class="field">Water / fluids consumed with meal (mL)<input name="water" type="number" min="0" step="50" value="0" /></label>
+      <div class="modal-actions"><button type="button" class="button button-ghost close-dialog">Cancel</button><button type="submit" class="button button-primary">Save entry <span data-icon="arrow"></span></button></div>
+    </form>
+  </dialog>
+  <dialog class="app-dialog" id="taskDialog">
+    <form id="taskForm" class="modal-form"><div class="modal-heading"><div><small>YOUR ROUTINE</small><h2 id="taskDialogTitle">Schedule an activity</h2></div><button type="button" class="icon-button close-dialog" aria-label="Close">×</button></div><input type="hidden" name="id" />
+      <div class="field-grid"><label class="field">Date<input name="date" type="date" required /></label><label class="field">Time<input name="time" type="time" /></label></div>
+      <label class="field">Activity name<input name="title" maxlength="90" required placeholder="e.g. Sleep, work, meal prep" /></label>
+      <label class="field">Category<select name="category"><option>Personal</option><option>Training</option><option>Work</option><option>Meal</option><option>Recovery</option></select></label>
+      <label class="field">Notes<textarea name="notes" rows="3" placeholder="Optional details..."></textarea></label>
+      <div class="modal-actions"><button type="button" class="button button-ghost close-dialog">Cancel</button><button type="submit" class="button button-primary">Save activity <span data-icon="arrow"></span></button></div>
+    </form>
+  </dialog>
+  <dialog class="app-dialog" id="planDialog">
+    <form id="planForm" class="modal-form"><div class="modal-heading"><div><small>TRAINING CALENDAR</small><h2 id="planDialogTitle">Edit workout</h2></div><button type="button" class="icon-button close-dialog" aria-label="Close">×</button></div><input type="hidden" name="id" />
+      <div class="field-grid"><label class="field">Date<input name="date" type="date" required /></label><label class="field">Workout type<select name="type"><option>Easy</option><option>Recovery</option><option>Long run</option><option>Threshold</option><option>Interval</option><option>Tempo</option><option>Race</option><option>Strength</option><option>Other</option></select></label></div>
+      <label class="field">Workout name<input name="title" maxlength="100" required /></label>
+      <div class="field-grid"><label class="field">Planned running distance (km)<input name="km" type="number" min="0" step="0.1" value="0" /></label><label class="field">Pace guide<input name="pace" maxlength="70" placeholder="e.g. 5:50–6:30/km" /></label></div>
+      <label class="field">Workout instructions<textarea name="notes" rows="4"></textarea></label>
+      <div class="modal-actions"><button type="button" class="button button-ghost close-dialog">Cancel</button><button type="submit" class="button button-primary">Save workout <span data-icon="arrow"></span></button></div>
+    </form>
+  </dialog>
+  <dialog class="app-dialog" id="settingsDialog">
+    <form id="settingsForm" class="modal-form"><div class="modal-heading"><div><small>YOUR BASELINE</small><h2>Targets & preferences</h2></div><button type="button" class="icon-button close-dialog" aria-label="Close">×</button></div>
+      <div class="field-grid"><label class="field">Body weight (kg)<input name="weight" type="number" min="20" max="400" step="0.1" required /></label><label class="field">Weekly mileage goal (km)<input name="weeklyGoal" type="number" min="0" max="300" step="1" required /></label></div>
+      <div class="field-grid"><label class="field">Daily calories (kcal)<input name="calories" type="number" min="1000" max="10000" step="50" required /></label><label class="field">Daily fluids (mL)<input name="water" type="number" min="250" max="12000" step="100" required /></label></div>
+      <div class="field-grid"><label class="field">Daily carbohydrates (g)<input name="carbs" type="number" min="0" max="1500" step="5" required /></label><label class="field">Daily protein (g)<input name="protein" type="number" min="0" max="500" step="5" required /></label></div>
+      <div class="field-grid"><label class="field">Daily fat (g)<input name="fat" type="number" min="0" max="500" step="5" required /></label><label class="field">Marathon goal time (hh:mm:ss)<input name="marathonGoal" type="text" placeholder="3:10:00" required /></label></div>
+      <div class="hint-box">These are editable starter targets, not a personalized calorie prescription. Match intake to training load, recovery and individual needs.</div>
+      <div class="modal-actions"><button type="button" class="button button-ghost close-dialog">Cancel</button><button type="submit" class="button button-primary">Update targets <span data-icon="arrow"></span></button></div>
+    </form>
+  </dialog>
+  <dialog class="app-dialog" id="raceDialog">
+    <form id="raceForm" class="modal-form"><div class="modal-heading"><div><small>RACE COMMAND CENTER</small><h2 id="raceDialogTitle">Add a race</h2></div><button type="button" class="icon-button close-dialog" aria-label="Close">×</button></div>
+    <input type="hidden" name="id" />
+    <label class="field">Race name<input name="name" maxlength="85" placeholder="e.g. Kuwait City Marathon" required /></label>
+    <div class="field-grid"><label class="field">Race date<input name="date" type="date" required /></label><label class="field">Distance (km)<input name="distance" type="number" min="0.1" max="300" step="0.001" required /></label></div>
+    <div class="field-grid"><label class="field">Target finish (h:mm:ss or mm:ss)<input name="target" type="text" placeholder="3:10:00" required /></label><label class="field">Pacing strategy<select name="strategy"><option value="conservative">Conservative start</option><option value="even">Even splits</option><option value="negative">Gentle negative split</option></select></label></div>
+    <div class="field-grid"><label class="field">Carbohydrates during race (g/hour)<input name="carbRate" type="number" min="0" max="120" step="5" value="60" required /></label><label class="field">Carbs per gel (g)<input name="gelCarbs" type="number" min="1" max="80" step="1" value="25" required /></label></div>
+    <label class="field">Race notes<textarea name="notes" maxlength="800" rows="3" placeholder="Course, weather, logistics and pace adjustments…"></textarea></label>
+    <div class="hint-box">These are planning targets, not predictions. Change the pace and fueling based on your recent fitness and practiced intake.</div>
+    <div class="modal-actions"><button type="button" class="button button-ghost close-dialog">Cancel</button><button type="submit" class="button button-primary">Save race plan</button></div>
+    </form>
+  </dialog>
+  <dialog class="app-dialog" id="recoveryDialog">
+    <form id="recoveryForm" class="modal-form"><div class="modal-heading"><div><small>RECOVERY JOURNAL</small><h2>Daily readiness check-in</h2></div><button type="button" class="icon-button close-dialog" aria-label="Close">×</button></div>
+      <input type="hidden" name="id"/><label class="field">Date<input type="date" name="date" required/></label>
+      <div class="field-grid"><label class="field">Sleep hours<input type="number" name="sleep" min="0" max="24" step="0.25" required/></label><label class="field">Resting heart rate (bpm, optional)<input type="number" name="restingHr" min="30" max="150"/></label></div>
+      <div class="field-grid"><label class="field">Leg soreness (0–10)<input type="number" name="soreness" min="0" max="10" required/></label><label class="field">Fatigue (0–10)<input type="number" name="fatigue" min="0" max="10" required/></label></div>
+      <label class="field">Stress (0–10)<input type="number" name="stress" min="0" max="10" required/></label>
+      <label class="field">Notes<textarea name="notes" rows="3" placeholder="How are your legs? Any warning signs?"></textarea></label>
+      <div class="modal-actions"><button type="button" class="button button-ghost close-dialog">Cancel</button><button type="submit" class="button button-primary">Save check-in</button></div>
+    </form>
+  </dialog>
+  <input id="corosInput" type="file" accept=".fit,.gpx,.csv,application/gpx+xml,text/csv" hidden />
+  <dialog class="app-dialog cloud-dialog" id="cloudDialog">
+    <form id="cloudForm" class="modal-form" autocomplete="off">
+      <div class="modal-heading"><div><small>GOOGLE SHEETS BACKEND</small><h2>Cloud sync & backup</h2></div><button type="button" class="icon-button close-cloud" aria-label="Close">×</button></div>
+      <p class="cloud-intro">Keep the same running log, nutrition, training calendar and daily schedule on your computer and phone. Your browser remains a local backup.</p>
+      <div class="cloud-state"><span class="cloud-indicator" id="cloudStateDot"></span><div><strong id="cloudStateTitle">Browser storage only</strong><small id="cloudStateHelp">Not connected to a Google Sheet.</small></div></div>
+      <label class="field">Google Apps Script web-app URL<input type="url" name="endpoint" id="cloudEndpoint" placeholder="https://script.google.com/macros/s/.../exec" spellcheck="false" required /></label>
+      <label class="field">Google OAuth web client ID<input type="text" name="clientId" id="cloudClientId" placeholder="000000000000-xxxxx.apps.googleusercontent.com" spellcheck="false" autocomplete="off" required /></label>
+      <div class="hint-box">First, enter your public OAuth Web Client ID and click <strong>Prepare Google sign-in</strong>. Then select your Google account using the official Google button. The backend verifies the signed ID token and an account allowlist; no secret is published to GitHub.</div>
+      <div class="v5-auth"><span id="cloudUserLabel">Not signed in</span><div id="googleSignIn" aria-label="Sign in with Google"></div></div>
+      <div class="cloud-main-actions"><button type="submit" class="button button-primary" id="cloudConnectBtn">Prepare Google sign-in <span data-icon="arrow"></span></button><button type="button" class="button button-ghost" id="cloudDisconnectBtn">Disconnect</button></div>
+      <div class="cloud-workspace" id="cloudWorkspace" hidden>
+        <div class="cloud-inspection" id="cloudInspection">Choose whether to use the existing cloud records or upload this browser's data.</div>
+        <div class="cloud-workspace-actions"><button type="button" class="button button-outline" id="cloudDownloadBtn">↓ Use cloud data</button><button type="button" class="button button-outline" id="cloudUploadBtn">↑ Upload browser data</button><button type="button" class="button button-ghost" id="cloudRefreshBtn">Check latest</button></div>
+      </div>
+      <p class="cloud-warning" id="cloudWarning" hidden></p>
+      <p class="cloud-footnote">If two devices edit the same cloud version, PACE blocks silent overwrites. Offline edits remain in this browser until you sign in and safely sync them. Export a JSON backup before replacing either copy.</p>
+    </form>
+  </dialog>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <input type="file" id="backupInput" accept="application/json,.json" hidden />
+</body>
+</html>
